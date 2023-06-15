@@ -22,7 +22,6 @@ class ChatGPTQuestionServiceImpl(
 ) : ChatGPTQuestionService {
 
     companion object {
-        const val authorization = "Authorization"
         const val bearer = "Bearer "
         const val model = "text-davinci-003"
         const val maxTokens = 300
