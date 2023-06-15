@@ -32,31 +32,6 @@ class ChatGPTQuestionServiceImpl(
         const val url = "https://api.openai.com/v1/completions"
     }
 
-    override fun buildHttpEntity(request: ChatGPTRequest): HttpEntity {
-        val headers = listOf(
-            HttpHeaders.CONTENT_TYPE to mediaType,
-            HttpHeaders.AUTHORIZATION to bearer + chatGPTProperties.apiKey
-        )
-
-        val requestBody = objectMapper.writeValueAsString(request)
-
-        val httpPost = HttpPost(url)
-            .apply { headers.forEach { (name, value) -> setHeader(name, value)  } }
-        httpPost.entity = StringEntity(requestBody, ContentType.APPLICATION_JSON)
-
-        return httpPost.entity
-    }
-
-    override fun getResponse(chatGPTHttpEntity: HttpEntity): ChatGPTResponse {
-        val httpPost = HttpPost(url)
-        httpPost.entity = chatGPTHttpEntity
-
-        val response = httpClient.execute(httpPost)
-        val requestBody = EntityUtils.toString(response.entity)
-
-        return objectMapper.readValue(requestBody, ChatGPTResponse::class.java)
-    }
-
     override fun askQuestion(request: QuestionRequest): ChatGPTResponse {
         val requestEntity = buildHttpEntity(
             ChatGPTRequest(
@@ -69,6 +44,31 @@ class ChatGPTQuestionServiceImpl(
         )
 
         return getResponse(requestEntity)
+    }
+
+    private fun getResponse(chatGPTHttpEntity: HttpEntity): ChatGPTResponse {
+        val httpPost = HttpPost(url)
+        httpPost.entity = chatGPTHttpEntity
+
+        val response = httpClient.execute(httpPost)
+        val requestBody = EntityUtils.toString(response.entity)
+
+        return objectMapper.readValue(requestBody, ChatGPTResponse::class.java)
+    }
+
+    private fun buildHttpEntity(request: ChatGPTRequest): HttpEntity {
+        val headers = listOf(
+            HttpHeaders.CONTENT_TYPE to mediaType,
+            HttpHeaders.AUTHORIZATION to bearer + chatGPTProperties.apiKey
+        )
+
+        val requestBody = objectMapper.writeValueAsString(request)
+
+        val httpPost = HttpPost(url)
+            .apply { headers.forEach { (name, value) -> setHeader(name, value)  } }
+        httpPost.entity = StringEntity(requestBody, ContentType.APPLICATION_JSON)
+
+        return httpPost.entity
     }
 
 }
