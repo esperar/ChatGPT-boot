@@ -10,4 +10,6 @@ class GlobalConfiguration {
 
     @Bean
     fun httpClient(): HttpClient =  HttpClients.createDefault()
+
+
 }

@@ -7,7 +7,7 @@ data class ChatGPTRequest(
     val model: String,
     val prompt: String,
     @JsonProperty("max_tokens")
-    val maxTokens: String,
+    val maxTokens: Int,
     val temperature: Double,
     @JsonProperty("top_p")
     val topP: Double
